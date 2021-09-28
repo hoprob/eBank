@@ -10,16 +10,57 @@ namespace eBank
         {
             List<User> users = new List<User>();
             DefUsers(users);
-            Console.WriteLine($"\t{Welcome()}");
-            LogIn(users);
+            bool isRunning = true;
+            int userNum;
+            bool loggedIn;
+            while(isRunning)
+            {
+                userNum = 0;
+                loggedIn = false;
+                do
+                {
+                    Console.Clear();
+                    Console.WriteLine($"\t{Welcome()}");
+                    LogIn(users, out loggedIn, out userNum);
+                } while (!loggedIn);
+                while(loggedIn)
+                {
+                    Console.Clear();
+                    Console.WriteLine($"\t\tInloggad som {users[userNum].GetFullName()}");
+                    Console.WriteLine("\n\t1. Se dina konton och saldo");
+                    Console.WriteLine("\t2. Överföring mellan konton");
+                    Console.WriteLine("\t3. Ta ut pengar");
+                    Console.WriteLine("\t4. Logga ut");
+                    string input = Console.ReadLine();
+                    switch(input)
+                    {
+                        case "1":
+                            break;
+                        case "2":
+                            break;
+                        case "3":
+                            break;
+                        case "4":
+                            loggedIn = false;
+                            break;
+                        default:
+                            Console.WriteLine("\n\tERROR! Du måste skriva en siffra mellan 1 och 4!");
+                            Thread.Sleep(1000);
+                            break;
+                    }
+                        
+
+                }               
+            }          
         }
         //Method for log in
-        private static bool LogIn(List<User> users)
+        private static void LogIn(List<User> users, out bool loggedIn, out int userNum)
         {
-            bool loggedIn = false;
+            loggedIn = false;
+            userNum = 0;
             bool correctId = false;
             //userNum to get the number of correct user-object in list.
-            int userNum = 0;
+            userNum = 0;
             do
             {
                 Console.Write("\nSkriv in personnummer (12 siffror ÅÅÅÅMMDDXXXX): ");
@@ -105,8 +146,7 @@ namespace eBank
             else
             {
                 loggedIn = false;
-            }
-            return loggedIn;
+            }           
         }
         //Method for a random welcome-message
         private static string Welcome()

@@ -30,6 +30,10 @@ namespace eBank
         {
             get { return this.pin; }
         }
+        public string GetFullName()
+        {
+            return this.firstName + " " + this.lastName;
+        }
         public static bool ValidateId(string id)
         {
             bool correctId = false;
