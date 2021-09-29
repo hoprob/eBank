@@ -40,6 +40,10 @@ namespace eBank
         {
             get { return this.pin; }
         }
+        public List<Account> Accounts
+        {
+            get { return this.accounts; }
+        }
         public void AddAccount(string accountName, double balance)
         {
             Account account1 = new Account(accountName, accounts.Count + 1, balance);

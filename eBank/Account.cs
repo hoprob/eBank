@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Globalization;
 
 namespace eBank
 {
@@ -16,7 +17,13 @@ namespace eBank
             this.number = number;
             this.balance = balance;
         }
-           
+        //Returns account information.
+        public override string ToString()
+        {
+            return $"\tKontonummer: {this.number}" +
+                $"\n\tKontonamn: {this.name}" +
+                $"\n\tSaldo: {balance.ToString("C")}";
+        }
 
     }
 }

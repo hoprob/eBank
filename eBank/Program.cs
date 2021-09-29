@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
+//TODO Lägga till färger i utskrifter
 namespace eBank
 {
     class Program
@@ -35,6 +36,14 @@ namespace eBank
                     switch(input)
                     {
                         case "1":
+                            Console.Clear();
+                            foreach (var account in users[userNum].Accounts)
+                            {
+                                Console.WriteLine(account.ToString());
+                                Console.WriteLine();
+                            }
+                            Console.WriteLine("\n\tKlicka ENTER för att komma till huvudmenyn!");
+                            Console.ReadKey();
                             break;
                         case "2":
                             break;
@@ -68,7 +77,7 @@ namespace eBank
                 //Checks if the id is in the right format
                 if (!User.ValidateId(id))
                 {
-                    Console.WriteLine("\n\tERROR! Personnummret är inte i korrekt format!");
+                    Console.WriteLine("\n\tERROR! Personnumret är inte i korrekt format!");
                     correctId = false;
                 }
                 else
@@ -81,6 +90,10 @@ namespace eBank
                             correctId = true;
                             userNum = i;
                         }
+                    }
+                    if(!correctId)
+                    {
+                        Console.WriteLine("\n\tPersonnumret finns ej registrerat!");
                     }
                 }
             } while (!correctId);
