@@ -159,11 +159,17 @@ namespace eBank
         //Method for adding default users in users-list
         private static void DefUsers(List<User> users)
         {
-            User user1 = new User("Robin", "Svensson", "198112189876", 6532);
-            User user2 = new User("Kalle", "Karlsson", "198902132458", 5617);
-            User user3 = new User("Petra", "Andersson", "199202296928", 1867);
-            User user4 = new User("Hilda", "Abrahamsson", "196212214966", 7612);
-            User user5 = new User("Frans", "Fransson", "200001010115", 1234);
+            User user1 = new User("Robin", "Svensson", "198112189876", 6532, "Lönekonto", 30000.00);
+            user1.AddAccount("Sparkonto", 451362.23);
+            user1.AddAccount("Uttagskonto", 3561.20);
+            User user2 = new User("Kalle", "Karlsson", "198902132458", 5617, "Sparkonto", 100000.00);
+            user2.AddAccount("Uttagskonto", 2635.12);
+            User user3 = new User("Petra", "Andersson", "199202296928", 1867, "Uttagskonto", 5000.50);
+            user3.AddAccount("Lönekonto", 14634.35);
+            User user4 = new User("Hilda", "Abrahamsson", "196212214966", 7612, "Lönekonto", 15521.52);
+            user4.AddAccount("Uttagskonto", 1365.03);
+            user4.AddAccount("Sparkonto", 53946.53);
+            User user5 = new User("Frans", "Fransson", "200001010115", 1234, "Sparkonto", 213026.63);
             users.Add(user1);
             users.Add(user2);
             users.Add(user3);

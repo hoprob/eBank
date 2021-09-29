@@ -10,6 +10,7 @@ namespace eBank
         string lastName;
         string id;
         int pin;
+        List<Account> accounts = new List<Account>();
 
         public User(string firstName, string lastName, string id, int pin)
         {
@@ -17,6 +18,15 @@ namespace eBank
             this.lastName = lastName;
             this.id = id;
             this.pin = pin;
+        }
+        public User(string firstName, string lastName, string id, int pin, string accountName, double accountBalance)
+        {
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.id = id;
+            this.pin = pin;
+            Account account1 = new Account(accountName, accounts.Count + 1, accountBalance);
+            this.accounts.Add(account1);
         }
         public User()
         {
@@ -29,6 +39,11 @@ namespace eBank
         public int Pin
         {
             get { return this.pin; }
+        }
+        public void AddAccount(string accountName, double balance)
+        {
+            Account account1 = new Account(accountName, accounts.Count + 1, balance);
+            this.accounts.Add(account1);
         }
         public string GetFullName()
         {
