@@ -17,6 +17,12 @@ namespace eBank
             this.number = number;
             this.balance = balance;
         }
+        public double Balance
+        {
+            get { return this.balance; }
+            set { this.balance = value; }
+        }
+            
         //Returns account information.
         public override string ToString()
         {

@@ -16,7 +16,7 @@ namespace eBank
             bool loggedIn;
             while(isRunning)
             {
-                userNum = 0;
+                userNum = 0;//TODO Skall nollning av användare ligga här?
                 loggedIn = false;
                 do
                 {
@@ -27,7 +27,7 @@ namespace eBank
                 while(loggedIn)
                 {
                     Console.Clear();
-                    Console.WriteLine($"\t\tInloggad som {users[userNum].GetFullName()}");
+                    Console.WriteLine($"\tInloggad som {users[userNum].GetFullName()}");
                     Console.WriteLine("\n\t1. Se dina konton och saldo");
                     Console.WriteLine("\t2. Överföring mellan konton");
                     Console.WriteLine("\t3. Ta ut pengar");
@@ -37,15 +37,16 @@ namespace eBank
                     {
                         case "1":
                             Console.Clear();
-                            foreach (var account in users[userNum].Accounts)
-                            {
-                                Console.WriteLine(account.ToString());
-                                Console.WriteLine();
-                            }
+                            users[userNum].PrintAccounts();
                             Console.WriteLine("\n\tKlicka ENTER för att komma till huvudmenyn!");
                             Console.ReadKey();
                             break;
                         case "2":
+                            Console.Clear();
+                            users[userNum].PrintAccounts();
+                            users[userNum].InternalTransfer();
+                            Console.WriteLine("\n\tKlicka ENTER för att komma till huvudmenyn!");
+                            Console.ReadKey();
                             break;
                         case "3":
                             break;
@@ -56,9 +57,7 @@ namespace eBank
                             Console.WriteLine("\n\tERROR! Du måste skriva en siffra mellan 1 och 4!");
                             Thread.Sleep(1000);
                             break;
-                    }
-                        
-
+                    }                        
                 }               
             }          
         }
