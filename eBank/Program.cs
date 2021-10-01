@@ -49,6 +49,11 @@ namespace eBank
                             Console.ReadKey();
                             break;
                         case "3":
+                            Console.Clear();
+                            users[userNum].PrintAccounts();
+                            users[userNum].Withdrawal();
+                            Console.WriteLine("\n\tKlicka ENTER för att komma till huvudmenyn!");
+                            Console.ReadKey();//TODO Gör en metod av tillbakagång till meny...
                             break;
                         case "4":
                             loggedIn = false;

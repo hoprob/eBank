@@ -44,6 +44,67 @@ namespace eBank
         {
             get { return this.accounts; }
         }
+        public void Withdrawal()
+        {
+            double withdrawalAmount;
+            int accountNum;
+            int pin;
+            bool inputOk = false;
+            do
+            {
+                Console.Write("Välj vilket konto du vill göra uttag från, ange kontonummer: ");
+                if (!Int32.TryParse(Console.ReadLine(), out accountNum) || accountNum > accounts.Count)
+                {
+                    Console.WriteLine($"\n\tERROR! Du måste skriva in en siffra mellan 1 och {accounts.Count}");
+                    inputOk = false;
+                }
+                else
+                {
+                    accountNum--;
+                    inputOk = true;
+                }
+            } while (!inputOk);
+            do
+            {
+                Console.Write("Hur mycket vill du ta ut?: ");
+                if (!Double.TryParse(Console.ReadLine(), out withdrawalAmount))
+                {
+                    Console.WriteLine($"\n\tERROR! Du måste skriva in en siffra mellan 1 och {accounts[accountNum].Balance}");
+                    inputOk = false;
+                }
+                else if (withdrawalAmount > accounts[accountNum].Balance)
+                {
+                    Console.WriteLine($"\tDu har inte tillräckligt med pengar på kontot!\n\t Max att ta ut är: {accounts[accountNum].Balance}");
+                    inputOk = false;
+                }
+                else
+                {
+                    inputOk = true;
+                }
+            } while (!inputOk);
+            do
+            {
+                Console.Write("\n\tVar god ange din pinkod: ");
+                if (!Int32.TryParse(Console.ReadLine(), out pin) || pin.ToString().Length != 4)
+                {
+                    Console.WriteLine("\n\tERROR! Du måste skriva in 4st siffor!");
+                    inputOk = false;
+                }
+                else if (pin == this.pin)
+                {
+                    inputOk = true;
+                }
+                else
+                {
+                    Console.WriteLine("\n\tPinkod ej giltlig!!");
+                    inputOk = false;
+                }//TODO Ska man kunna avbryta om man glömt pinkod?
+            } while (!inputOk);
+            accounts[accountNum].Balance -= withdrawalAmount;//TODO Bygg metod i accounts för plus och minus
+            Console.Clear();
+            Console.WriteLine("\tUttag genomfört! Nytt saldo:");
+            Console.WriteLine("\n" + accounts[accountNum].ToString());
+        }
         //Method to transfer money between users internal accounts
         public void InternalTransfer()
         {
@@ -92,7 +153,7 @@ namespace eBank
                 }
                 else if(transferSum > accounts[fromAccount].Balance)
                 {
-                    Console.WriteLine($"\tDu har inte tillräckligt med pengar på kontot!\n\t Max att för över är: {accounts[fromAccount].Balance}");
+                    Console.WriteLine($"\tDu har inte tillräckligt med pengar på kontot!\n\t Max att föra över är: {accounts[fromAccount].Balance}");
                     inputOk = false;
                 }
                 else
@@ -101,7 +162,7 @@ namespace eBank
                 }
             } while (!inputOk);
             //Adds transfer sum to toAccount and takes the same from fromAccount
-            accounts[toAccount].Balance += transferSum;
+            accounts[toAccount].Balance += transferSum; //TODO Ändra så att en metod i account tar bort samt lägger till summan
             accounts[fromAccount].Balance -= transferSum;
             //Prints the new balance of the two accounts
             Console.Clear();
