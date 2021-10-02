@@ -44,12 +44,55 @@ namespace eBank
         {
             get { return this.accounts; }
         }
+        //Method for deposit to account
+        public void Deposit()
+        {
+            bool inputOk = false;
+            int accountNum;
+            double depositAmount;
+            //Gets account number from user
+            do
+            {
+                Console.Write("Välj vilket konto du vill sätta in pengar på, ange kontonummer: ");
+                if(!Int32.TryParse(Console.ReadLine(), out accountNum) || accountNum > accounts.Count)
+                {
+                    Console.WriteLine($"\n\tERROR! Du måste skriva in en siffra mellan 1 och {accounts.Count}");
+                    inputOk = false;
+                }
+                else
+                {
+                    accountNum--;
+                    inputOk = true;
+                }
+            } while (!inputOk);
+            //Gets amount to deposit from user
+            do
+            {
+                Console.Write("Skriv hur mycket du vill sätta in på kontot: ");
+                if(!Double.TryParse(Console.ReadLine(), out depositAmount))
+                {
+                    Console.WriteLine("\n\tERROR! Du måste skriva in din summa med siffor!");
+                    inputOk = false;
+                }
+                else
+                {
+                    inputOk = true;
+                }
+            } while (!inputOk);
+            //Makes deposit to account and prints info about new balance
+            accounts[accountNum].AddToBalance(depositAmount);
+            Console.Clear();
+            Console.WriteLine("\tInsättning genomförd! Nytt saldo:\n");
+            Console.WriteLine(accounts[accountNum].ToString());
+        }
+        //Method for withdrawal from account
         public void Withdrawal()
         {
             double withdrawalAmount;
             int accountNum;
             int pin;
             bool inputOk = false;
+            //Gets user choice of account
             do
             {
                 Console.Write("Välj vilket konto du vill göra uttag från, ange kontonummer: ");
@@ -64,6 +107,7 @@ namespace eBank
                     inputOk = true;
                 }
             } while (!inputOk);
+            //Gets amount of withdrawal
             do
             {
                 Console.Write("Hur mycket vill du ta ut?: ");
@@ -82,6 +126,7 @@ namespace eBank
                     inputOk = true;
                 }
             } while (!inputOk);
+            //Gets pincode from user and verifies that it's correct
             do
             {
                 Console.Write("\n\tVar god ange din pinkod: ");
@@ -100,7 +145,8 @@ namespace eBank
                     inputOk = false;
                 }//TODO Ska man kunna avbryta om man glömt pinkod?
             } while (!inputOk);
-            accounts[accountNum].Balance -= withdrawalAmount;//TODO Bygg metod i accounts för plus och minus
+            //Makes withdrawal and shows new balance on the account
+            accounts[accountNum].RemoveFromBalance(withdrawalAmount);
             Console.Clear();
             Console.WriteLine("\tUttag genomfört! Nytt saldo:");
             Console.WriteLine("\n" + accounts[accountNum].ToString());
@@ -162,14 +208,15 @@ namespace eBank
                 }
             } while (!inputOk);
             //Adds transfer sum to toAccount and takes the same from fromAccount
-            accounts[toAccount].Balance += transferSum; //TODO Ändra så att en metod i account tar bort samt lägger till summan
-            accounts[fromAccount].Balance -= transferSum;
+            accounts[toAccount].AddToBalance(transferSum); 
+            accounts[fromAccount].RemoveFromBalance(transferSum);
             //Prints the new balance of the two accounts
             Console.Clear();
             Console.WriteLine("\tNya saldon är:\n");
             Console.WriteLine(accounts[fromAccount].ToString() + "\n");
             Console.WriteLine(accounts[toAccount].ToString());
         }
+        //Method to print information about all users accounts
         public void PrintAccounts()
         {
             foreach (var account in accounts)
@@ -178,15 +225,18 @@ namespace eBank
                 Console.WriteLine();
             }
         }
-        public void AddAccount(string accountName, double balance)
+        //Method to add an account
+        public void AddAccount(string accountName, double balance = 0)
         {
-            Account account1 = new Account(accountName, accounts.Count + 1, balance);
-            this.accounts.Add(account1);
+            Account newAccount = new Account(accountName, accounts.Count + 1, balance);
+            this.accounts.Add(newAccount);
         }
+        //Method to get users full name
         public string GetFullName()
         {
             return this.firstName + " " + this.lastName;
         }
+        //Method to validate a Swedish social security number
         public static bool ValidateId(string id)
         {
             bool correctId = false;
@@ -240,7 +290,7 @@ namespace eBank
                     //The control number must be the same as the controlsum rounded to upper 10 minus the controlsum.
                     if(controlNum == upperControlNum - controlSum)
                     {
-                        //Checks that month and day is correct.
+                        //Checks that month and day is correct and that it acctually existed
                         if (month >= 1 && month <= 12 && day > 0)
                         {
                             if (month % 2 != 0 || month == 8 && day <= 31)
@@ -260,10 +310,8 @@ namespace eBank
                                     correctId = false;
                                 }   
                             }
-
                         }
-                    }
-                                        
+                    }                                      
                 }
             }
             catch (FormatException)
@@ -272,6 +320,7 @@ namespace eBank
             }
             return correctId;
         }
+        //Method to calculate if it's leapyear or not
         public static bool LeapYear(int year)
         {
             bool isLeepYear = false;

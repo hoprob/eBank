@@ -9,11 +9,13 @@ namespace eBank
     {
         static void Main(string[] args)
         {
+            //Creates list of User objects and adds default users to it
             List<User> users = new List<User>();
             DefUsers(users);
             bool isRunning = true;
             int userNum;
             bool loggedIn;
+            //Main loop
             while(isRunning)
             {
                 userNum = 0;//TODO Skall nollning av användare ligga här?
@@ -24,6 +26,7 @@ namespace eBank
                     Console.WriteLine($"\t{Welcome()}");
                     LogIn(users, out loggedIn, out userNum);
                 } while (!loggedIn);
+                //Logged in loop
                 while(loggedIn)
                 {
                     Console.Clear();
@@ -31,31 +34,45 @@ namespace eBank
                     Console.WriteLine("\n\t1. Se dina konton och saldo");
                     Console.WriteLine("\t2. Överföring mellan konton");
                     Console.WriteLine("\t3. Ta ut pengar");
-                    Console.WriteLine("\t4. Logga ut");
+                    Console.WriteLine("\t4. Sätta in pengar");
+                    Console.WriteLine("\t5. Skapa nytt konto");
+                    Console.WriteLine("\t6. Logga ut");
                     string input = Console.ReadLine();
                     switch(input)
                     {
                         case "1":
                             Console.Clear();
                             users[userNum].PrintAccounts();
-                            Console.WriteLine("\n\tKlicka ENTER för att komma till huvudmenyn!");
-                            Console.ReadKey();
+                            BackToMenu();
                             break;
                         case "2":
                             Console.Clear();
                             users[userNum].PrintAccounts();
                             users[userNum].InternalTransfer();
-                            Console.WriteLine("\n\tKlicka ENTER för att komma till huvudmenyn!");
-                            Console.ReadKey();
+                            BackToMenu();
                             break;
                         case "3":
                             Console.Clear();
                             users[userNum].PrintAccounts();
                             users[userNum].Withdrawal();
-                            Console.WriteLine("\n\tKlicka ENTER för att komma till huvudmenyn!");
-                            Console.ReadKey();//TODO Gör en metod av tillbakagång till meny...
+                            BackToMenu();
                             break;
                         case "4":
+                            Console.Clear();
+                            users[userNum].PrintAccounts();
+                            users[userNum].Deposit();
+                            BackToMenu();
+                            break;
+                        case "5":
+                            Console.Clear();
+                            Console.Write("\tSkriv in namn på kontot: ");
+                            users[userNum].AddAccount(Console.ReadLine());
+                            Console.Clear();
+                            Console.WriteLine("\tNytt konto skapat!\n");
+                            users[userNum].PrintAccounts();
+                            BackToMenu();
+                            break;
+                        case "6":
                             loggedIn = false;
                             break;
                         default:
@@ -172,6 +189,12 @@ namespace eBank
             string[] message = { "Välkommen!", "God dag och Välkommen!", "Kul att se dig, Välkommen!", "Redo för lite finanser? Välkommen!", "Hej och välkommen!" };
             string welcomeMsg = message[rnd.Next(0, message.Length - 1)];
             return welcomeMsg;
+        }
+        //Method for getting back to menu
+        private static void BackToMenu()
+        {
+            Console.WriteLine("\n\tKlicka ENTER för att komma till huvudmenyn!");
+            Console.ReadKey();
         }
         //Method for adding default users in users-list
         private static void DefUsers(List<User> users)

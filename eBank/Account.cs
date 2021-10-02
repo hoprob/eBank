@@ -20,9 +20,17 @@ namespace eBank
         public double Balance
         {
             get { return this.balance; }
-            set { this.balance = value; }
         }
-            
+        //Method to add an amount to balance
+        public void AddToBalance(double amount)
+        {
+            this.balance += amount;
+        }
+        //Method to remove an amoount from balance
+        public void RemoveFromBalance(double amount)
+        {
+            this.balance -= amount;
+        }
         //Returns account information.
         public override string ToString()
         {
