@@ -18,15 +18,16 @@ namespace eBank
             this.lastName = lastName;
             this.id = id;
             this.pin = pin;
+            AddAccount("Uttagskonto");
         }
-        public User(string firstName, string lastName, string id, int pin, string accountName, double accountBalance)
+        public User(string firstName, string lastName, string id, int pin, string accountName, int accountNum, double accountBalance = 0)
         {
             this.firstName = firstName;
             this.lastName = lastName;
             this.id = id;
             this.pin = pin;
-            Account account1 = new Account(accountName, accounts.Count + 1, accountBalance);
-            this.accounts.Add(account1);
+            Account newAccount = new Account(accountName, accountNum, accountBalance);
+            accounts.Add(newAccount);
         }
         public User()
         {
@@ -50,6 +51,7 @@ namespace eBank
             bool inputOk = false;
             int accountNum;
             double depositAmount;
+            PrintAccounts();
             //Gets account number from user
             do
             {
@@ -92,6 +94,7 @@ namespace eBank
             int accountNum;
             int pin;
             bool inputOk = false;
+            PrintAccounts();
             //Gets user choice of account
             do
             {
@@ -158,6 +161,7 @@ namespace eBank
             int toAccount;
             double transferSum;
             bool inputOk = false;
+            PrintAccounts();
             //Gets accountnumber to transfer from
             do
             {
@@ -225,10 +229,18 @@ namespace eBank
                 Console.WriteLine();
             }
         }
-        //Method to add an account
-        public void AddAccount(string accountName, double balance = 0)
+        //Method to add an account with random accountnumber of 5 integers
+        public void AddAccount(string accountName, int accountNum = 0, double balance = 0)
         {
-            Account newAccount = new Account(accountName, accounts.Count + 1, balance);
+            Random rnd = new Random();
+            do
+            {
+                if(accountNum < 10000)
+                {
+                    accountNum = rnd.Next(10000, 99999);
+                }                       
+            } while (Program.ExistingAccountNum(accountNum)); //TODO Finns det en bättre lösning på detta??
+            Account newAccount = new Account(accountName, accountNum, balance);
             this.accounts.Add(newAccount);
         }
         //Method to get users full name

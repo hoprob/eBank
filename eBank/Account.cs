@@ -21,6 +21,11 @@ namespace eBank
         {
             get { return this.balance; }
         }
+        public int Number
+        {
+            get { return this.number; }
+        }
+
         //Method to add an amount to balance
         public void AddToBalance(double amount)
         {
