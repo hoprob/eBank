@@ -18,20 +18,6 @@ namespace eBank
             this.lastName = lastName;
             this.id = id;
             this.pin = pin;
-            AddAccount("Uttagskonto");
-        }
-        public User(string firstName, string lastName, string id, int pin, string accountName, int accountNum, double accountBalance = 0)
-        {
-            this.firstName = firstName;
-            this.lastName = lastName;
-            this.id = id;
-            this.pin = pin;
-            Account newAccount = new Account(accountName, accountNum, accountBalance);
-            accounts.Add(newAccount);
-        }
-        public User()
-        {
-
         }
         public string Id
         {
@@ -207,7 +193,7 @@ namespace eBank
                     Console.WriteLine($"\n\tERROR! Du måste skriva in kontonumret med 5st siffor!");
                     inputOk = false;
                 }
-                else if (!Program.ExistingAccountNum(toAccountNum))//TODO Göra metod inom klassen, kanske att AddUser ska ligga iu program??
+                else if (!ExistingAccountNum(toAccountNum, users))
                 {
                     Console.WriteLine($"\n\tERROR! Kontonumret extisterar ej!");
                     inputOk = false;
@@ -436,18 +422,19 @@ namespace eBank
             }
         }
         //Method to add an account with random accountnumber of 5 integers
-        public void AddAccount(string accountName, int accountNum = 0, double balance = 0)
+        public void AddAccount(Account newAccount/*string accountName, int accountNum = 0, double balance = 0*/)
         {
-            Random rnd = new Random();
-            do
-            {
-                if(accountNum < 10000)
-                {
-                    accountNum = rnd.Next(10000, 99999);
-                }                       
-            } while (Program.ExistingAccountNum(accountNum)); //TODO Finns det en bättre lösning på detta??
-            Account newAccount = new Account(accountName, accountNum, balance);
-            this.accounts.Add(newAccount);
+            accounts.Add(newAccount);
+            //Random rnd = new Random();
+            //do
+            //{
+            //    if(accountNum < 10000)
+            //    {
+            //        accountNum = rnd.Next(10000, 99999);
+            //    }                       
+            //} while (Program.ExistingAccountNum(accountNum)); //TODO Finns det en bättre lösning på detta??
+            //Account newAccount = new Account(accountName, accountNum, balance);
+            //this.accounts.Add(newAccount);
         }
 
         //Method to get users full name

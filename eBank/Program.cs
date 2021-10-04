@@ -77,8 +77,7 @@ namespace eBank
                         //Create new account
                         case "5":
                             Console.Clear();
-                            Console.Write("\tSkriv in namn på kontot: ");
-                            users[userNum].AddAccount(Console.ReadLine());
+                            AddAccount(userNum);
                             Console.Clear();
                             Console.WriteLine("\tNytt konto skapat!\n");
                             users[userNum].PrintAccounts();
@@ -218,6 +217,34 @@ namespace eBank
             string welcomeMsg = message[rnd.Next(0, message.Length - 1)];
             return welcomeMsg;
         }
+        public static void AddAccount(int userNum, int accountNum = 0, double balance = 0)
+        {
+            Console.Write("\tSkriv in namn på kontot: ");
+            string accountName =Console.ReadLine();
+            Random rnd = new Random();
+            do
+            {
+                if (accountNum < 10000)
+                {
+                    accountNum = rnd.Next(10000, 99999);
+                }
+            } while (ExistingAccountNum(accountNum));
+            Account newAccount = new Account(accountName, accountNum, balance);
+            users[userNum].AddAccount(newAccount);
+        }
+        public static void AddAccount(int userNum, string accountName, int accountNum = 0, double balance = 0)
+        {
+            Random rnd = new Random();
+            do
+            {
+                if (accountNum < 10000)
+                {
+                    accountNum = rnd.Next(10000, 99999);
+                }
+            } while (ExistingAccountNum(accountNum)); //TODO Finns det en bättre lösning på detta??
+            Account newAccount = new Account(accountName, accountNum, balance);
+            users[userNum].AddAccount(newAccount);
+        }
         //Method for Transfer menu
         private static void TransferMenu(int userNum)
         {
@@ -263,22 +290,30 @@ namespace eBank
         //Method for adding default users in users-list
         private static void DefUsers()
         {
-            User user1 = new User("Robin", "Svensson", "198112189876", 6532, "Lönekonto", 59326, 30000.00);
-            user1.AddAccount("Sparkonto", 64956, 451362.23);
-            user1.AddAccount("Uttagskonto", 18644, 3561.20);
-            User user2 = new User("Kalle", "Karlsson", "198902132458", 5617, "Sparkonto", 32493, 100000.00);
-            user2.AddAccount("Uttagskonto", 72697, 2635.12);
-            User user3 = new User("Petra", "Andersson", "199202296928", 1867, "Uttagskonto", 76192, 5000.50);
-            user3.AddAccount("Lönekonto", 96181, 14634.35);
-            User user4 = new User("Hilda", "Abrahamsson", "196212214966", 7612, "Lönekonto", 91343, 15521.52);
-            user4.AddAccount("Uttagskonto", 64646, 1365.03);
-            user4.AddAccount("Sparkonto", 51515, 53946.53);
-            User user5 = new User("Frans", "Fransson", "200001010115", 1234, "Sparkonto", 11111, 213026.63);
+            User user1 = new User("Robin", "Svensson", "198112189876", 6532);
             users.Add(user1);
+            AddAccount(0, "Lönekonto", 59326, 30000.00);
+            AddAccount(0, "Sparkonto", 64956, 451362.23);
+            AddAccount(0, "Uttagskonto", 18644, 3561.20);
+            User user2 = new User("Kalle", "Karlsson", "198902132458", 5617);
             users.Add(user2);
+            AddAccount(1, "Sparkonto", 32493, 100000.00);
+            AddAccount(1, "Uttagskonto", 72697, 2635.12);
+            User user3 = new User("Petra", "Andersson", "199202296928", 1867);
             users.Add(user3);
+            AddAccount(2, "Uttagskonto", 76192, 5000.50);
+            AddAccount(2, "Lönekonto", 96181, 14634.35);
+            User user4 = new User("Hilda", "Abrahamsson", "196212214966", 7612);
             users.Add(user4);
+            AddAccount(3, "Lönekonto", 91343, 15521.52);
+            AddAccount(3, "Uttagskonto", 64646, 1365.03);
+            AddAccount(3, "Sparkonto", 51515, 53946.53);
+            User user5 = new User("Frans", "Fransson", "200001010115", 1234);
             users.Add(user5);
+            AddAccount(4, "Sparkonto", 11111, 213026.63);
+            
+            
+            
         }
     }
 }
