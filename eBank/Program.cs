@@ -8,6 +8,10 @@ using System.Threading;
 //TODO Lägg till så att saldon för alla konton för alla användare sparas mellan körningarna av programmet så att saldon inte återställs.
 //TODO Menyval ändra pinkod
 //TODO Kunna backa i menyvalen
+//TODO Skydda Pinkoden genom metod i User klassen
+//TODO Sortera kontonumren i utskriften
+//TODO Historik i överföring
+
 namespace eBank
 {
     class Program
@@ -17,7 +21,7 @@ namespace eBank
         static void Main(string[] args)
         {
             
-            DefUsers(users);
+            DefUsers();
             bool isRunning = true;
             int userNum;
             bool loggedIn;
@@ -52,10 +56,10 @@ namespace eBank
                             users[userNum].PrintAccounts();
                             BackToMenu();
                             break;
-                        //Make transfer between internal accounts
+                        //Make transfer between internal or external accounts
                         case "2":
                             Console.Clear();
-                            users[userNum].InternalTransfer();
+                            TransferMenu(userNum);
                             BackToMenu();
                             break;
                         //Make withdrawal
@@ -85,7 +89,7 @@ namespace eBank
                             loggedIn = false;
                             break;                        
                         default:
-                            Console.WriteLine("\n\tERROR! Du måste skriva en siffra mellan 1 och 4!");
+                            Console.WriteLine("\n\tERROR! Du måste skriva en siffra mellan 1 och 6!");
                             Thread.Sleep(1000);
                             break;
                     }                        
@@ -214,6 +218,42 @@ namespace eBank
             string welcomeMsg = message[rnd.Next(0, message.Length - 1)];
             return welcomeMsg;
         }
+        //Method for Transfer menu
+        private static void TransferMenu(int userNum)
+        {
+            bool transferBool = true; ;
+            while(transferBool)
+            {
+                Console.Clear();
+                Console.WriteLine("Vilken typ av överföring vill du göra?");
+                Console.WriteLine("\t1. Till ett eget konto");
+                Console.WriteLine("\t2. Till ett externt konto");
+                Console.WriteLine("\t3. Tillbaka till huvudmenyn");
+                switch (Console.ReadLine())
+                {
+                    case "1":
+                        Console.Clear();
+                        users[userNum].InternalTransfer();
+                        transferBool = false;
+                        break;
+                    case "2":
+                        Console.Clear();
+                        users[userNum].ExternalTransfer(users);
+                        transferBool = false;
+                        break;
+                    case "3":
+                        transferBool = false;
+                        break;
+                    default:
+                        Console.WriteLine("\n\tERROR! Du måste skriva en siffra mellan 1 och 3");
+                        transferBool = true;
+                        Thread.Sleep(1000);
+                        break;
+                }
+            }
+            
+            
+        }
         //Method for getting back to menu
         private static void BackToMenu()
         {
@@ -221,7 +261,7 @@ namespace eBank
             Console.ReadKey();
         }
         //Method for adding default users in users-list
-        private static void DefUsers(List<User> users)
+        private static void DefUsers()
         {
             User user1 = new User("Robin", "Svensson", "198112189876", 6532, "Lönekonto", 59326, 30000.00);
             user1.AddAccount("Sparkonto", 64956, 451362.23);
