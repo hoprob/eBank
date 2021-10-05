@@ -17,10 +17,6 @@ namespace eBank
             this.number = number;
             this.balance = balance;
         }
-        public double Balance
-        {
-            get { return this.balance; }
-        }
         public int Number
         {
             get { return this.number; }
@@ -36,6 +32,19 @@ namespace eBank
         {
             this.balance -= amount;
         }
+        //Method to print balance
+        public string PrintBalance()
+        {
+            return this.balance.ToString("C");
+        }
+        //Method to check if transferSum is bigger than balance
+        public bool EnoughBalance(double transferSum)
+        {
+            if (transferSum > this.balance)
+                return false;
+            else
+                return true;
+        }
         //Returns account information.
         public override string ToString()
         {
@@ -43,6 +52,5 @@ namespace eBank
                 $"\n\tKontonamn: {this.name}" +
                 $"\n\tSaldo: {balance.ToString("C")}";
         }
-
     }
 }

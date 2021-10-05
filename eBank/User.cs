@@ -23,10 +23,6 @@ namespace eBank
         {
             get { return this.id; }
         }
-        public List<Account> Accounts
-        {
-            get { return this.accounts; }
-        }
         //Method for deposit to account
         public void Deposit()
         {
@@ -112,12 +108,12 @@ namespace eBank
                     toAccountNum.ToString().Length != 5)
                 {
                     Console.WriteLine($"\n\tERROR! Du måste skriva in" +
-                        $" kontonumret med 5st siffor!");
+                        $" kontonumret med 5st siffor!\n");
                     inputOk = false;
                 }
                 else if (!ExistingAccountNum(toAccountNum, users))
                 {
-                    Console.WriteLine($"\n\tERROR! Kontonumret extisterar ej!");
+                    Console.WriteLine($"\n\tERROR! Kontonumret extisterar ej!\n");
                     inputOk = false;
                 }
                 else
@@ -128,11 +124,12 @@ namespace eBank
                     UserAccountIndex(toAccountNum, users, out toUserIndex,
                         out toAccountIndex);
                     //Checks that the account holder is correct
-                    Console.WriteLine($"Kontot {toAccountNum} tillhör:" +
+                    Console.Clear();
+                    Console.WriteLine($"\n\tKontot {toAccountNum} tillhör:" +
                         $" {users[toUserIndex].GetFullName()}");
                     do
                     {
-                        Console.Write("För att godkänna mottagare skriv" +
+                        Console.Write("\nFör att godkänna mottagare skriv" +
                             " [Y] för JA eller [N] för NEJ: ");
                         input = Console.ReadLine().ToUpper();
                         if (input == "Y")
@@ -142,13 +139,14 @@ namespace eBank
                         }
                         else if (input == "N")
                         {
+                            Console.Clear();
                             inputOk = false;
                             answerOk = true;
                         }
                         else
                         {
                             Console.WriteLine("\n\tERROR! Du måste svara med" +
-                                " [Y] för JA eller [N] för NEJ!");
+                                " [Y] för JA eller [N] för NEJ!\n");
                             answerOk = false;
                         }
                     } while (!answerOk);  
@@ -166,7 +164,7 @@ namespace eBank
                     users[toUserIndex].accounts[toAccountIndex].AddToBalance(transferSum);
                     //Prints new balance on logged in users account
                     Console.Clear();
-                    Console.WriteLine("\tTransaktion godkänd!");
+                    Console.WriteLine("\tTransaktion godkänd!\n");
                     Console.WriteLine("\tDitt nya saldo är: \n");
                     Console.WriteLine(accounts[fromAccountIndex].ToString());
                     inputOk = true;
@@ -184,7 +182,6 @@ namespace eBank
             int fromAccountIndex;
             int toAccountIndex;
             double transferSum;
-            bool inputOk = false;
             string userInstruction = "överföra FRÅN";
             PrintAccounts();
             //Gets accountnumber to transfer from
@@ -206,7 +203,7 @@ namespace eBank
             Console.WriteLine(accounts[toAccountIndex].ToString());
         }
         //Method to get userIndex and accountIndex
-        public void UserAccountIndex(int accountNum, List<User> users,
+        private void UserAccountIndex(int accountNum, List<User> users,
             out int userIndex, out int accountIndex)
         {
             userIndex = 0;
@@ -229,7 +226,7 @@ namespace eBank
             }
         }
         //Method to get accountIndex
-        public int AccountIndex(int accountNum)
+        private int AccountIndex(int accountNum)
         {
             int accountIndex = 0;
             for (int i = 0; i < accounts.Count; i++)
@@ -247,7 +244,7 @@ namespace eBank
         {
             foreach (var user in users)
             {
-                foreach (var account in user.Accounts)
+                foreach (var account in user.accounts)
                 {
                     if (account.Number == accountNum)
                     {
@@ -258,7 +255,7 @@ namespace eBank
             return false;
         }
         //Method to see if account number exits among internal accounts
-        public bool ExistingAccountNum(int accountNum)
+        private bool ExistingAccountNum(int accountNum)
         {
             foreach (var account in accounts)
             {
@@ -272,6 +269,7 @@ namespace eBank
         //Method to print information about all users accounts
         public void PrintAccounts()
         {
+            Console.WriteLine("Dina konton är:\n");
             foreach (var account in accounts)
             {
                 Console.WriteLine(account.ToString());
@@ -284,7 +282,7 @@ namespace eBank
             accounts.Add(newAccount);
         }
         //Method to get account index from user
-        public int GetInternalAccountIndex(string userInstruction)
+        private int GetInternalAccountIndex(string userInstruction)
         {
             int accountNum;
             int accountIndex = 0;
@@ -297,12 +295,12 @@ namespace eBank
                     accountNum.ToString().Length != 5)
                 {
                     Console.WriteLine($"\n\tERROR! Du måste skriva in" +
-                        " kontonumret med 5st siffor!");
+                        " kontonumret med 5st siffor!\n");
                     inputOk = false;
                 }
                 else if (!ExistingAccountNum(accountNum))
                 {
-                    Console.WriteLine($"\n\tERROR! Kontonumret extisterar ej!");
+                    Console.WriteLine($"\n\tERROR! Kontonumret extisterar ej!\n");
                     inputOk = false;
                 }
                 else
@@ -319,18 +317,18 @@ namespace eBank
             bool inputOk;
             do
             {
-                Console.Write($"Hur mycket vill {userInstruction}?: ");
+                Console.Write($"\nHur mycket vill {userInstruction}?: ");
                 if (!Double.TryParse(Console.ReadLine(), out transferSum))
                 {
                     Console.WriteLine($"\n\tERROR! Du måste skriva in summan" +
-                        $" med siffor! ");
+                        $" med siffor!\n");
                     inputOk = false;
                 }
-                else if (transferSum > accounts[accountIndex].Balance)
+                else if (!accounts[accountIndex].EnoughBalance(transferSum))
                 {
-                    Console.WriteLine($"\tDu har inte tillräckligt med pengar" +
+                    Console.WriteLine($"\n\tDu har inte tillräckligt med pengar" +
                         $" på kontot!\n\t Max att {userInstruction}:" +
-                        $" {accounts[accountIndex].Balance}");//TODO metod i Account GetBalance och Enough Balance
+                        $" {accounts[accountIndex].PrintBalance()}\n");
                     inputOk = false;
                 }
                 else
@@ -464,7 +462,7 @@ namespace eBank
             return correctId;
         }
         //Method to calculate if it's leapyear or not
-        public static bool LeapYear(int year)
+        private static bool LeapYear(int year)
         {
             bool isLeepYear = false;
             try

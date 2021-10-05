@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Threading;
 
 //TODO Lägga till färger i utskrifter
+//TODO Snygga till utskrifter
 //TODO Gör så att olika konton har olika valuta, inklusive att valuta omvandlas när pengar flyttas mellan dem
-//TODO Bygg metoder för att hämta kontonummer etc. Mycket upprepande kod....
 //TODO Lägg till så att saldon för alla konton för alla användare sparas mellan körningarna av programmet så att saldon inte återställs.
 //TODO Menyval ändra pinkod
 //TODO Kunna backa i menyvalen
-//TODO Skydda Pinkoden genom metod i User klassen
 //TODO Sortera kontonumren i utskriften
 //TODO Historik i överföring
 
@@ -198,7 +197,7 @@ namespace eBank
             string welcomeMsg = message[rnd.Next(0, message.Length - 1)];
             return welcomeMsg;
         }
-        public static void AddAccount(int userNum, double balance = 0)
+        private static void AddAccount(int userNum, double balance = 0)
         {
             int accountNum;
             Console.Write("\tSkriv in namn på kontot: ");
@@ -211,7 +210,7 @@ namespace eBank
             Account newAccount = new Account(accountName, accountNum, balance);
             users[userNum].AddAccount(newAccount);
         }
-        public static void AddAccount(int userNum, string accountName,
+        private static void AddAccount(int userNum, string accountName,
             int accountNum = 0, double balance = 0)
         {
             Random rnd = new Random();
@@ -235,10 +234,10 @@ namespace eBank
             while(transferBool)
             {
                 Console.Clear();
-                Console.WriteLine("Vilken typ av överföring vill du göra?");
-                Console.WriteLine("\t1. Till ett eget konto");
+                Console.WriteLine("\tVilken typ av överföring vill du göra?");
+                Console.WriteLine("\n\t1. Till ett eget konto");
                 Console.WriteLine("\t2. Till ett externt konto");
-                Console.WriteLine("\n\t3. Tillbaka till huvudmenyn");
+                Console.WriteLine("\n\t3. Avbryt");
                 switch (Console.ReadLine())
                 {
                     case "1":
