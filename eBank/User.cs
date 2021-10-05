@@ -31,33 +31,12 @@ namespace eBank
         public void Deposit()
         {
             bool inputOk = false;
-            int accountNum;
             int accountIndex = 0;
             double depositAmount;
+            string userInstruction = "sätta in pengar på";
             PrintAccounts();
             //Gets account number from user
-            do
-            {
-                Console.Write("Välj vilket konto du vill sätta in pengar på," +
-                    " ange kontonummer: ");
-                if(!Int32.TryParse(Console.ReadLine(), out accountNum) ||
-                    accountNum.ToString().Length != 5 )
-                {
-                    Console.WriteLine($"\n\tERROR! Du måste skriva in" +
-                        $" kontonumret med 5st siffror!");
-                    inputOk = false;
-                }
-                else if (!ExistingAccountNum(accountNum))
-                {
-                    Console.WriteLine($"\n\tERROR! Kontonumret extisterar ej!");
-                    inputOk = false;
-                }
-                else
-                {
-                    accountIndex = AccountIndex(accountNum);
-                    inputOk = true;
-                }
-            } while (!inputOk);
+            accountIndex = GetInternalAccountIndex(userInstruction);
             //Gets amount to deposit from user
             do
             {
@@ -82,62 +61,23 @@ namespace eBank
         //Method for withdrawal from account
         public void Withdrawal()
         {
-            double withdrawalAmount;
-            int accountNum;
+            double transferSum;
             int accountIndex = 0;
             bool inputOk = false;
+            string userInstruction = "uttag från";
             PrintAccounts();
-            //Gets user choice of account
-            do
-            {
-                Console.Write("Välj vilket konto du vill göra uttag från, ange" +
-                    " kontonummer: ");
-                if (!Int32.TryParse(Console.ReadLine(), out accountNum))
-                {
-                    Console.WriteLine($"\n\tERROR! Du måste skriva in kontonumret" +
-                        $" med 5st siffor!");
-                    inputOk = false;
-                }
-                else if (!ExistingAccountNum(accountNum))
-                {
-                    Console.WriteLine($"\n\tERROR! Kontonumret extisterar ej!");
-                    inputOk = false;
-                }
-                else
-                {
-                    accountIndex = AccountIndex(accountNum);
-                    inputOk = true;
-                }
-            } while (!inputOk);
-            //Gets amount of withdrawal
-            do
-            {
-                Console.Write("Hur mycket vill du ta ut?: ");
-                if (!Double.TryParse(Console.ReadLine(), out withdrawalAmount))
-                {
-                    Console.WriteLine($"\n\tERROR! Du måste skriva in en siffra" +
-                        $" mellan 1 och {accounts[accountIndex].Balance}");
-                    inputOk = false;
-                }
-                else if (withdrawalAmount > accounts[accountIndex].Balance)
-                {
-                    Console.WriteLine($"\tDu har inte tillräckligt med pengar" +
-                        $" på kontot!\n\t Max att ta ut är:" +
-                        $" {accounts[accountIndex].Balance}");
-                    inputOk = false;
-                }
-                else
-                {
-                    inputOk = true;
-                }
-            } while (!inputOk);
+            //Gets account index
+            accountIndex = GetInternalAccountIndex(userInstruction);
+            //Gets transferSum from user
+            userInstruction = "ta ut";
+            transferSum = GetTransferSum(accountIndex, userInstruction);
             do
             {
                 //Gets pincode from user and verifies that it's correct
                 if (CheckPin(GetPin()))
                 {
                     //Makes withdrawal and shows new balance on the account
-                    accounts[accountIndex].RemoveFromBalance(withdrawalAmount);
+                    accounts[accountIndex].RemoveFromBalance(transferSum);
                     Console.Clear();
                     Console.WriteLine("\tUttag genomfört! Nytt saldo:");
                     Console.WriteLine("\n" + accounts[accountIndex].ToString());
@@ -153,37 +93,16 @@ namespace eBank
         //Method to transfer to external account
         public void ExternalTransfer(List<User> users)
         {
-            int fromAccountNum;
             int fromAccountIndex = 0;
             int toAccountNum;
             int toAccountIndex = 0;
             int toUserIndex = 0;
             double transferSum;
             bool inputOk = false;
+            string userInstruction = "överföra FRÅN";
             PrintAccounts();
             //Gets account to transfer from
-            do
-            {
-                Console.Write("Vilket konto vill du överföra FRÅN, ange" +
-                    " kontonummer: ");
-                if(!Int32.TryParse(Console.ReadLine(), out fromAccountNum) ||
-                    fromAccountNum.ToString().Length != 5)
-                {
-                    Console.WriteLine($"\n\tERROR! Du måste skriva in" +
-                        " kontonumret med 5st siffor!");
-                    inputOk = false;
-                }
-                else if(!ExistingAccountNum(fromAccountNum))
-                {
-                    Console.WriteLine($"\n\tERROR! Kontonumret extisterar ej!");
-                    inputOk = false;
-                }
-                else
-                {
-                    fromAccountIndex = AccountIndex(fromAccountNum);
-                    inputOk = true;
-                }
-            } while(!inputOk);
+            fromAccountIndex = GetInternalAccountIndex(userInstruction);
             //Gets account to transfer to
             do
             {
@@ -236,27 +155,8 @@ namespace eBank
                 }
             } while (!inputOk);
             //Gets the transfer sum
-            do
-            {
-                Console.Write("Hur mycket vill du föra över?: ");
-                if(!Double.TryParse(Console.ReadLine(), out transferSum))
-                {
-                    Console.WriteLine($"\n\tERROR! Du måste ange en siffra" +
-                        $" mellan 1 och {accounts[fromAccountIndex].Balance}");
-                    inputOk = false;
-                }
-                else if (transferSum > accounts[fromAccountIndex].Balance)
-                {
-                    Console.WriteLine($"\tDu har inte tillräckligt med pengar" +
-                        $" på kontot!\n\t Max att föra över är:" +
-                        $" {accounts[fromAccountIndex].Balance}");
-                    inputOk = false;
-                }
-                else
-                {
-                    inputOk = true;
-                }
-            } while (!inputOk);
+            userInstruction = "föra över";
+            transferSum = GetTransferSum(fromAccountIndex, userInstruction);
             do
             {
                 if (CheckPin(GetPin()))
@@ -281,82 +181,21 @@ namespace eBank
         //Method to transfer money between users internal accounts
         public void InternalTransfer()
         {
-            int fromAccountNum;
-            int fromAccountIndex = 0;
-            int toAccountNum;
-            int toAccountIndex = 0;
+            int fromAccountIndex;
+            int toAccountIndex;
             double transferSum;
             bool inputOk = false;
+            string userInstruction = "överföra FRÅN";
             PrintAccounts();
             //Gets accountnumber to transfer from
-            do
-            {
-                Console.Write("Vilket konto vill du överföra FRÅN, ange" +
-                    " kontonummer: ");
-                if (!Int32.TryParse(Console.ReadLine(), out fromAccountNum) ||
-                    fromAccountNum.ToString().Length != 5)
-                {
-                    Console.WriteLine($"\n\tERROR! Du måste ange kontonumret" +
-                        " med 5st siffror!");
-                    inputOk = false;
-                }
-                else if(!ExistingAccountNum(fromAccountNum))
-                {
-                    Console.WriteLine($"\n\tERROR! Kontonumret extisterar ej!");
-                    inputOk = false;
-                }
-                else
-                {
-                    fromAccountIndex = AccountIndex(fromAccountNum);
-                    inputOk = true;
-                }
-            } while (!inputOk);
+            fromAccountIndex = GetInternalAccountIndex(userInstruction);
             //Gets account number to transfer to
-            do
-            {
-                Console.Write("Vilket konto vill du överföra TILL, ange" +
-                    " kontonummer: ");
-                if (!Int32.TryParse(Console.ReadLine(), out toAccountNum) ||
-                    toAccountNum.ToString().Length != 5)
-                {
-                    Console.WriteLine($"\n\tERROR! Du måste ange kontonumret" +
-                        $" med 5st siffror!");
-                    inputOk = false;
-                }
-                else if (!ExistingAccountNum(toAccountNum))
-                {
-                    Console.WriteLine($"\n\tERROR! Kontonumret extisterar ej!");
-                    inputOk = false;
-                }
-                else
-                {
-                    toAccountIndex = AccountIndex(toAccountNum);
-                    inputOk = true;
-                }
-            } while (!inputOk);
+            userInstruction = "överföra TILL";
+            toAccountIndex = GetInternalAccountIndex(userInstruction);
             /*Gets sum to transfer and checks that there is enough money on
             from account*/
-            do
-            {
-                Console.Write("\nHur mycket vill du föra över?: ");
-                if (!Double.TryParse(Console.ReadLine(), out transferSum))
-                {
-                    Console.WriteLine($"\n\tERROR! Du måste ange en siffra" +
-                        $" mellan 1 och {accounts[fromAccountIndex].Balance}");
-                    inputOk = false;
-                }
-                else if(transferSum > accounts[fromAccountIndex].Balance)
-                {
-                    Console.WriteLine($"\tDu har inte tillräckligt med pengar" +
-                        $" på kontot!\n\t Max att föra över är:" +
-                        $" {accounts[fromAccountIndex].Balance}");
-                    inputOk = false;
-                }
-                else
-                {
-                    inputOk = true;
-                }
-            } while (!inputOk);
+            userInstruction = "föra över";
+            transferSum = GetTransferSum(fromAccountIndex, userInstruction);
             //Adds transfer sum to toAccount and takes the same from fromAccount
             accounts[toAccountIndex].AddToBalance(transferSum); 
             accounts[fromAccountIndex].RemoveFromBalance(transferSum);
@@ -444,6 +283,64 @@ namespace eBank
         {
             accounts.Add(newAccount);
         }
+        //Method to get account index from user
+        public int GetInternalAccountIndex(string userInstruction)
+        {
+            int accountNum;
+            int accountIndex = 0;
+            bool inputOk;
+            do
+            {
+                Console.Write($"Vilket konto vill du {userInstruction}, ange" +
+                    " kontonummer: ");
+                if (!Int32.TryParse(Console.ReadLine(), out accountNum) ||
+                    accountNum.ToString().Length != 5)
+                {
+                    Console.WriteLine($"\n\tERROR! Du måste skriva in" +
+                        " kontonumret med 5st siffor!");
+                    inputOk = false;
+                }
+                else if (!ExistingAccountNum(accountNum))
+                {
+                    Console.WriteLine($"\n\tERROR! Kontonumret extisterar ej!");
+                    inputOk = false;
+                }
+                else
+                {
+                    accountIndex = this.AccountIndex(accountNum);
+                    inputOk = true;
+                }
+            } while (!inputOk);
+            return accountIndex;
+        }
+        private double GetTransferSum(int accountIndex, string userInstruction)
+        {
+            double transferSum;
+            bool inputOk;
+            do
+            {
+                Console.Write($"Hur mycket vill {userInstruction}?: ");
+                if (!Double.TryParse(Console.ReadLine(), out transferSum))
+                {
+                    Console.WriteLine($"\n\tERROR! Du måste skriva in summan" +
+                        $" med siffor! ");
+                    inputOk = false;
+                }
+                else if (transferSum > accounts[accountIndex].Balance)
+                {
+                    Console.WriteLine($"\tDu har inte tillräckligt med pengar" +
+                        $" på kontot!\n\t Max att {userInstruction}:" +
+                        $" {accounts[accountIndex].Balance}");//TODO metod i Account GetBalance och Enough Balance
+                    inputOk = false;
+                }
+                else
+                {
+                    inputOk = true;
+                }
+            } while (!inputOk);
+            return transferSum;
+        }
+        //Method to get pin from user
         public int GetPin()
         {
             bool inputOk = false;
@@ -464,32 +361,7 @@ namespace eBank
             } while (!inputOk);
             return pin;
         }
-        //public bool GetPin()
-        //{
-        //    bool inputOk;
-        //    bool pinOk = false;
-        //    do
-        //    {
-        //        Console.Write("\n\tVar god ange din pinkod: ");
-        //        if (!Int32.TryParse(Console.ReadLine(), out pin) ||
-        //            pin.ToString().Length != 4)
-        //        {
-        //            Console.WriteLine("\n\tERROR! Du måste skriva in 4st siffor!");
-        //            inputOk = false;
-        //        }
-        //        else if (!CheckPin(pin))
-        //        {
-        //            inputOk = true;
-        //            pinOk = true;
-        //        }
-        //        else
-        //        {
-        //            Console.WriteLine("\n\tPinkod ej giltlig!!");
-        //            inputOk = false;
-        //        }//TODO Ska man kunna avbryta om man glömt pinkod?
-        //    } while (!inputOk);
-        //    return pinOk;
-        //}
+        //Method to confirm pin to user
         public bool CheckPin(int pin)
         {
             if (pin == this.pin)
