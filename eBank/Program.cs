@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 
 //TODO Lägga till färger i utskrifter
+//TODO Ska metoderna för färgutskrift ligga i program klassen? Hur ska man nå dem från user klassen ?
 //TODO Snygga till utskrifter
 //TODO Gör så att olika konton har olika valuta, inklusive att valuta omvandlas när pengar flyttas mellan dem
 //TODO Lägg till så att saldon för alla konton för alla användare sparas mellan körningarna av programmet så att saldon inte återställs.
@@ -265,7 +266,7 @@ namespace eBank
                         transferBool = false;
                         break;
                     default:
-                        Console.WriteLine("\n\tERROR! Du måste skriva en siffra" +
+                        PrintDanger("\n\tERROR! Du måste skriva en siffra" +
                             " mellan 1 och 3");
                         transferBool = true;
                         Thread.Sleep(1000);
@@ -278,18 +279,18 @@ namespace eBank
         //Method for getting back to menu
         private static void BackToMenu()
         {
-            Console.WriteLine("\n\tKlicka ENTER för att komma till huvudmenyn!");
+            PrintInfo("\n\tKlicka ENTER för att komma till huvudmenyn!");
             Console.ReadKey();
         }
         private static void PrintMenuNum(string num)
         {
-            Console.BackgroundColor = ConsoleColor.DarkMagenta;
+            Console.BackgroundColor = ConsoleColor.DarkGray;
             Console.Write(num);
             Console.ResetColor();
         }
         private static void PrintGreeting(string text)
         {
-            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine(text);
             Console.ResetColor();
         }

@@ -39,7 +39,7 @@ namespace eBank
                 Console.Write("Skriv hur mycket du vill sätta in på kontot: ");
                 if(!Double.TryParse(Console.ReadLine(), out depositAmount))
                 {
-                    Console.WriteLine("\n\tERROR! Du måste skriva in din" +
+                    PrintWarning("\n\tERROR! Du måste skriva in din" +
                         " summa med siffor!");
                     inputOk = false;
                 }
@@ -51,7 +51,7 @@ namespace eBank
             //Makes deposit to account and prints info about new balance
             accounts[accountIndex].AddToBalance(depositAmount);
             Console.Clear();
-            Console.WriteLine("\tInsättning genomförd! Nytt saldo:\n");
+            PrintSuccess("\tInsättning genomförd! Nytt saldo:\n");
             Console.WriteLine(accounts[accountIndex].ToString());
         }
         //Method for withdrawal from account
@@ -75,13 +75,13 @@ namespace eBank
                     //Makes withdrawal and shows new balance on the account
                     accounts[accountIndex].RemoveFromBalance(transferSum);
                     Console.Clear();
-                    Console.WriteLine("\tUttag genomfört! Nytt saldo:");
+                    PrintSuccess("\tUttag genomfört! Nytt saldo:");
                     Console.WriteLine("\n" + accounts[accountIndex].ToString());
                     inputOk = true;
                 }
                 else
                 {
-                    Console.WriteLine("\n\tPinkod ej giltlig!!");
+                    PrintDanger("\n\tPinkod ej giltlig!!");
                     inputOk = false;
                 }//TODO Ska man kunna avbryta om man glömt pinkod?
             } while (!inputOk);
@@ -107,13 +107,13 @@ namespace eBank
                 if (!Int32.TryParse(Console.ReadLine(), out toAccountNum) ||
                     toAccountNum.ToString().Length != 5)
                 {
-                    Console.WriteLine($"\n\tERROR! Du måste skriva in" +
+                    PrintWarning($"\n\tERROR! Du måste skriva in" +
                         $" kontonumret med 5st siffor!\n");
                     inputOk = false;
                 }
                 else if (!ExistingAccountNum(toAccountNum, users))
                 {
-                    Console.WriteLine($"\n\tERROR! Kontonumret extisterar ej!\n");
+                    PrintDanger($"\n\tERROR! Kontonumret extisterar ej!\n");
                     inputOk = false;
                 }
                 else
@@ -145,7 +145,7 @@ namespace eBank
                         }
                         else
                         {
-                            Console.WriteLine("\n\tERROR! Du måste svara med" +
+                            PrintWarning("\n\tERROR! Du måste svara med" +
                                 " [Y] för JA eller [N] för NEJ!\n");
                             answerOk = false;
                         }
@@ -164,14 +164,14 @@ namespace eBank
                     users[toUserIndex].accounts[toAccountIndex].AddToBalance(transferSum);
                     //Prints new balance on logged in users account
                     Console.Clear();
-                    Console.WriteLine("\tTransaktion godkänd!\n");
+                    PrintSuccess("\tTransaktion godkänd!\n");
                     Console.WriteLine("\tDitt nya saldo är: \n");
                     Console.WriteLine(accounts[fromAccountIndex].ToString());
                     inputOk = true;
                 }
                 else
                 {
-                    Console.WriteLine("\n\tPinkod ej giltlig!!");
+                    PrintDanger("\n\tPinkod ej giltlig!!");
                     inputOk = false;
                 }//TODO Ska man kunna avbryta om man glömt pinkod?
             } while (!inputOk);  
@@ -198,7 +198,7 @@ namespace eBank
             accounts[fromAccountIndex].RemoveFromBalance(transferSum);
             //Prints the new balance of the two accounts
             Console.Clear();
-            Console.WriteLine("\tNya saldon är:\n");
+            PrintSuccess("\tNya saldon är:\n");
             Console.WriteLine(accounts[fromAccountIndex].ToString() + "\n");
             Console.WriteLine(accounts[toAccountIndex].ToString());
         }
@@ -294,13 +294,13 @@ namespace eBank
                 if (!Int32.TryParse(Console.ReadLine(), out accountNum) ||
                     accountNum.ToString().Length != 5)
                 {
-                    Console.WriteLine($"\n\tERROR! Du måste skriva in" +
+                    PrintWarning($"\n\tERROR! Du måste skriva in" +
                         " kontonumret med 5st siffor!\n");
                     inputOk = false;
                 }
                 else if (!ExistingAccountNum(accountNum))
                 {
-                    Console.WriteLine($"\n\tERROR! Kontonumret extisterar ej!\n");
+                    PrintDanger($"\n\tERROR! Kontonumret extisterar ej!\n");
                     inputOk = false;
                 }
                 else
@@ -320,13 +320,13 @@ namespace eBank
                 Console.Write($"\nHur mycket vill {userInstruction}?: ");
                 if (!Double.TryParse(Console.ReadLine(), out transferSum))
                 {
-                    Console.WriteLine($"\n\tERROR! Du måste skriva in summan" +
+                    PrintWarning($"\n\tERROR! Du måste skriva in summan" +
                         $" med siffor!\n");
                     inputOk = false;
                 }
                 else if (!accounts[accountIndex].EnoughBalance(transferSum))
                 {
-                    Console.WriteLine($"\n\tDu har inte tillräckligt med pengar" +
+                    PrintDanger($"\n\tDu har inte tillräckligt med pengar" +
                         $" på kontot!\n\t Max att {userInstruction}:" +
                         $" {accounts[accountIndex].PrintBalance()}\n");
                     inputOk = false;
@@ -349,7 +349,7 @@ namespace eBank
                 if (!Int32.TryParse(Console.ReadLine(), out pin) ||
                     pin.ToString().Length != 4)
                 {
-                    Console.WriteLine("\n\tERROR! Du måste skriva in 4st siffor!");
+                    PrintWarning("\n\tERROR! Du måste skriva in 4st siffor!");
                     inputOk = false;
                 }
                 else
@@ -454,10 +454,9 @@ namespace eBank
                     }                                      
                 }
             }
-            catch (FormatException)
+            catch (Exception e)
             {
-                Console.WriteLine("\n\tERROR! Du måste skriva personnummer med" +
-                    " siffor!");
+                Console.WriteLine(e.Message);
             }
             return correctId;
         }
@@ -486,6 +485,36 @@ namespace eBank
                 Console.WriteLine(ex.Message);
             }
             return isLeepYear;
+        }
+        private void PrintGreeting(string text)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.WriteLine(text);
+            Console.ResetColor();
+        }
+        private void PrintInfo(string text)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write(text);
+            Console.ResetColor();
+        }
+        private void PrintDanger(string text)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine(text);
+            Console.ResetColor();
+        }
+        private void PrintWarning(string text)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine(text);
+            Console.ResetColor();
+        }
+        private void PrintSuccess(string text)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine(text);
+            Console.ResetColor();
         }
     }
 }
