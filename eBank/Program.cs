@@ -32,21 +32,27 @@ namespace eBank
                 do
                 {
                     Console.Clear();
-                    Console.WriteLine($"\t{Welcome()}");
+                    PrintGreeting($"\t{Welcome()}");
                     LogIn(users, out loggedIn, out userNum);
                 } while (!loggedIn);
                 //Logged in loop
                 while(loggedIn)
                 {
                     Console.Clear();
-                    Console.WriteLine($"\tInloggad som" +
+                    PrintGreeting($"\tInloggad som" +
                         $" {users[userNum].GetFullName()}");
-                    Console.WriteLine("\n\t1. Se dina konton och saldo");
-                    Console.WriteLine("\t2. Överföring mellan konton");
-                    Console.WriteLine("\t3. Ta ut pengar");
-                    Console.WriteLine("\t4. Sätta in pengar");
-                    Console.WriteLine("\t5. Skapa nytt konto");
-                    Console.WriteLine("\t6. Logga ut");
+                    PrintMenuNum("\n\t1.");
+                    Console.WriteLine(" Se dina konton och saldo");
+                    PrintMenuNum("\t2.");
+                    Console.WriteLine(" Överföring mellan konton");
+                    PrintMenuNum("\t3.");
+                    Console.WriteLine(" Ta ut pengar");
+                    PrintMenuNum("\t4.");
+                    Console.WriteLine(" Sätta in pengar");
+                    PrintMenuNum("\t5.");
+                    Console.WriteLine(" Skapa nytt konto");
+                    PrintMenuNum("\t6.");
+                    Console.WriteLine(" Logga ut");
                     string input = Console.ReadLine();
                     switch(input)
                     {
@@ -107,12 +113,15 @@ namespace eBank
             userNum = 0;
             do
             {
-                Console.Write("\nSkriv in personnummer (12 siffror ÅÅÅÅMMDDXXXX): ");
+                Console.Write("\nSkriv in personnummer (");
+                PrintInfo("12 siffror ÅÅÅÅMMDDXXXX");
+                Console.Write("): ");
                 string id = Console.ReadLine();
                 //Checks if the id is in the right format
                 if (!User.ValidateId(id))
                 {
-                    Console.WriteLine("\n\tERROR! Personnumret är inte i korrekt" +
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    PrintDanger("\n\tERROR! Personnumret är inte i korrekt" +
                         " format!");
                     correctId = false;
                 }
@@ -129,11 +138,13 @@ namespace eBank
                     }
                     if(!correctId)
                     {
-                        Console.WriteLine("\n\tPersonnumret finns ej registrerat!");
+                        PrintWarning("\n\tPersonnumret finns ej registrerat!");
                     }
                 }
             } while (!correctId);
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine("\n\tGiltligt personummer!");
+            Console.ResetColor();
             /*Get pincode input, checks format of input and compare to user-object
              * user gets 3 attempts*/
             bool correctPin = false;
@@ -142,13 +153,13 @@ namespace eBank
             {
                 if(users[userNum].CheckPin(users[userNum].GetPin()))
                 {
-                    Console.WriteLine("\n\tPinkod giltlig!");
+                    PrintSuccess("\n\tPinkod giltlig!");
                     correctPin = true;
                     Thread.Sleep(1000);
                 }
                 else
                 {
-                    Console.WriteLine($"\n\tFel pinkod! Du har {2 - attempts}" +
+                    PrintDanger($"\n\tFel pinkod! Du har {2 - attempts}" +
                         $" försök kvar.");
                     correctPin = false;
                     attempts++;
@@ -162,9 +173,9 @@ namespace eBank
                 for (int i = 0; i <= 180; i++)
                 {
                     Console.Clear();
-                    Console.WriteLine("Du har angett fel pinkod 3 gånger." +
+                    PrintDanger("Du har angett fel pinkod 3 gånger." +
                         " Programmet är nu låst i 3 minuter.");
-                    Console.WriteLine($"{counterMin}m {counterSec}s");
+                    PrintDanger($"{counterMin}m {counterSec}s");
                     if(counterSec == 0 && counterMin > 0)
                     {
                         counterSec = 59;
@@ -269,6 +280,42 @@ namespace eBank
         {
             Console.WriteLine("\n\tKlicka ENTER för att komma till huvudmenyn!");
             Console.ReadKey();
+        }
+        private static void PrintMenuNum(string num)
+        {
+            Console.BackgroundColor = ConsoleColor.DarkMagenta;
+            Console.Write(num);
+            Console.ResetColor();
+        }
+        private static void PrintGreeting(string text)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            Console.WriteLine(text);
+            Console.ResetColor();
+        }
+        private static void PrintInfo(string text)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
+            Console.Write(text);
+            Console.ResetColor();
+        }
+        private static void PrintDanger(string text)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine(text);
+            Console.ResetColor();
+        }
+        private static void PrintWarning(string text)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine(text);
+            Console.ResetColor();
+        }
+        private static void PrintSuccess(string text)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine(text);
+            Console.ResetColor();
         }
         //Method for adding default users in users-list
         private static void DefUsers()
