@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
 
 namespace eBank
 {
@@ -371,6 +371,15 @@ namespace eBank
         public string GetFullName()
         {
             return this.firstName + " " + this.lastName;
+        }
+        //Method to print user and accounts to file
+        public void PrintToFile(StreamWriter sw)
+        {
+            sw.WriteLine($"{this.firstName}###{this.lastName}###{this.id}###{this.pin}");
+            foreach (Account account in accounts)
+            {
+                account.PrintToFile(sw);
+            }
         }
         //Method to validate a Swedish social security number
         public static bool ValidateId(string id)

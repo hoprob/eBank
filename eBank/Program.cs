@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.IO;
 
 //TODO Lägga till färger i utskrifter
 //TODO Ska metoderna för färgutskrift ligga i program klassen? Hur ska man nå dem från user klassen ?
 //TODO Snygga till utskrifter
 //TODO Gör så att olika konton har olika valuta, inklusive att valuta omvandlas när pengar flyttas mellan dem
-//TODO Lägg till så att saldon för alla konton för alla användare sparas mellan körningarna av programmet så att saldon inte återställs.
 //TODO Menyval ändra pinkod
 //TODO Kunna backa i menyvalen
 //TODO Sortera kontonumren i utskriften
 //TODO Historik i överföring
+//TODO Fler klasser annat design pattern för klarare struktur
 
 namespace eBank
 {
@@ -20,16 +21,19 @@ namespace eBank
         static List<User> users = new List<User>();
         static void Main(string[] args)
         {
-            
-            DefUsers();
+            //If users.txt does not exist we create it with default users
+            if (!File.Exists("users.txt"))
+            {
+                CreateUsersFile();
+            }
+            //Reads user information from .txt file to users list
+            ReadFromFile();
             bool isRunning = true;
             int userNum;
-            bool loggedIn;
+            bool loggedIn = false; ;
             //Main loop
             while(isRunning)
             {
-                userNum = 0;//TODO Skall nollning av användare ligga här?
-                loggedIn = false;
                 do
                 {
                     Console.Clear();
@@ -39,6 +43,7 @@ namespace eBank
                 //Logged in loop
                 while(loggedIn)
                 {
+                    //Main menu
                     Console.Clear();
                     PrintGreeting($"\tInloggad som" +
                         $" {users[userNum].GetFullName()}");
@@ -54,6 +59,8 @@ namespace eBank
                     Console.WriteLine(" Skapa nytt konto");
                     PrintMenuNum("\t6.");
                     Console.WriteLine(" Logga ut");
+                    PrintMenuNum("\t7.");
+                    Console.WriteLine(" Logga ut och Avsluta");
                     string input = Console.ReadLine();
                     switch(input)
                     {
@@ -94,8 +101,15 @@ namespace eBank
                             break;
                         //Log out
                         case "6":
+                            SaveToFile();
                             loggedIn = false;
-                            break;                        
+                            break;
+                        //Log out and Exit program
+                        case "7":
+                            SaveToFile();
+                            loggedIn = false;
+                            isRunning = false;
+                            break;
                         default:
                             Console.WriteLine("\n\tERROR! Du måste skriva en" +
                                 " siffra mellan 1 och 6!");
@@ -267,6 +281,7 @@ namespace eBank
                 }
             }          
         }
+
         //Method for getting back to menu
         private static void BackToMenu()
         {
@@ -315,30 +330,91 @@ namespace eBank
             Console.WriteLine(text);
             Console.ResetColor();
         }
-        //Method for adding default users in users-list
-        private static void DefUsers()
+        //Method to save users list to .txt file
+        private static void SaveToFile()
         {
-            User user1 = new User("Robin", "Svensson", "198112189876", 6532);
-            users.Add(user1);
-            AddAccount(0, "Lönekonto", 59326, 30000.00);
-            AddAccount(0, "Sparkonto", 64956, 451362.23);
-            AddAccount(0, "Uttagskonto", 18644, 3561.20);
-            User user2 = new User("Kalle", "Karlsson", "198902132458", 5617);
-            users.Add(user2);
-            AddAccount(1, "Sparkonto", 32493, 100000.00);
-            AddAccount(1, "Uttagskonto", 72697, 2635.12);
-            User user3 = new User("Petra", "Andersson", "199202296928", 1867);
-            users.Add(user3);
-            AddAccount(2, "Uttagskonto", 76192, 5000.50);
-            AddAccount(2, "Lönekonto", 96181, 14634.35);
-            User user4 = new User("Hilda", "Abrahamsson", "196212214966", 7612);
-            users.Add(user4);
-            AddAccount(3, "Lönekonto", 91343, 15521.52);
-            AddAccount(3, "Uttagskonto", 64646, 1365.03);
-            AddAccount(3, "Sparkonto", 51515, 53946.53);
-            User user5 = new User("Frans", "Fransson", "200001010115", 1234);
-            users.Add(user5);
-            AddAccount(4, "Sparkonto", 11111, 213026.63);    
+            using (StreamWriter sw = new StreamWriter("users.txt"))
+            {
+                foreach (User user in users)
+                {
+                    user.PrintToFile(sw);
+                }
+            }
+        }
+
+        //Method to read from file
+        private static void ReadFromFile()
+        {
+            string[] userArray = new string[4];
+            string[] accountArray = new string[3];
+            int userIndex = -1;
+            string fileName = "users.txt";
+            try
+            {
+                if (File.Exists(fileName))
+                {
+                    using (StreamReader sr = new StreamReader(fileName))
+                    {
+
+                        string row;
+                        while ((row = sr.ReadLine()) != null)
+                        {
+                            //Users
+                            if (row.Contains("###"))
+                            {
+                                userArray = row.Split("###");
+                                User newUser = new User(userArray[0], userArray[1],
+                                    userArray[2], Convert.ToInt32(userArray[3]));
+                                users.Add(newUser);
+                                userIndex++;
+                            }
+                            //Accounts
+                            else if (row.Contains("@@@"))
+                            {
+                                accountArray = row.Split("@@@");
+                                AddAccount(userIndex, accountArray[0],
+                                    Convert.ToInt32(accountArray[1]), Convert.ToDouble(accountArray[2]));
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    throw new Exception($"Error! Filen:  {fileName}  finns ej tillgänglig!" +
+                        $"\nInga användare kommer att läsas in till programmet.");
+                }
+            }
+            catch(Exception e)
+            {
+                PrintDanger(e.ToString());
+                PrintDanger("\n\nDå programmet ej kan läsa in användare kommer det att avslutas." +
+                    "\nTRYCK ENTER för att avsluta programmet!");
+                Console.ReadKey();
+                Environment.Exit(0);
+            }
+        }
+        //Method to create users .txt file
+        private static void CreateUsersFile()
+        {
+            using (StreamWriter sw = new StreamWriter("users.txt"))
+            {
+                sw.WriteLine("Robin###Svensson###198112189876###6532");
+                sw.WriteLine("Lönekonto@@@59326@@@33000");
+                sw.WriteLine("Sparkonto@@@64956@@@449362,23");
+                sw.WriteLine("Uttagskonto@@@18644@@@2561,2");
+                sw.WriteLine("Kalle###Karlsson###198902132458###5617");
+                sw.WriteLine("Sparkonto@@@32493@@@100000");
+                sw.WriteLine("Uttagskonto@@@72697@@@2635,12");
+                sw.WriteLine("Petra###Andersson###199202296928###1867");
+                sw.WriteLine("Uttagskonto@@@76192@@@5000,5");
+                sw.WriteLine("Lönekonto@@@96181@@@14634,35");
+                sw.WriteLine("Hilda###Abrahamsson###196212214966###7612");
+                sw.WriteLine("Lönekonto@@@91343@@@15521,52");
+                sw.WriteLine("Uttagskonto@@@64646@@@1365,03");
+                sw.WriteLine("Sparkonto@@@51515@@@53946,53");
+                sw.WriteLine("Frans###Fransson###200001010115###1234");
+                sw.WriteLine("Sparkonto@@@11111@@@213026,63");
+            }
         }
     }
 }

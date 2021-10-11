@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Globalization;
+using System.IO;
 
 namespace eBank
 {
@@ -44,6 +45,11 @@ namespace eBank
                 return false;
             else
                 return true;
+        }
+        //Method to print account to .txt file
+        public void PrintToFile(StreamWriter sw)
+        {
+            sw.WriteLine( $"{this.name}@@@{this.number}@@@{this.balance}");
         }
         //Returns account information.
         public override string ToString()
