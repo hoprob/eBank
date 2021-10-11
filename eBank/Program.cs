@@ -84,9 +84,11 @@ namespace eBank
                         //Create new account
                         case "5":
                             Console.Clear();
-                            AddAccount(userNum);
+                            Console.Write("\tSkriv in namn på kontot: ");
+                            //string accountName = Console.ReadLine();
+                            AddAccount(userNum, Console.ReadLine());
                             Console.Clear();
-                            Console.WriteLine("\tNytt konto skapat!\n");
+                            PrintSuccess("\tNytt konto skapat!\n");
                             users[userNum].PrintAccounts();
                             BackToMenu();
                             break;
@@ -209,19 +211,7 @@ namespace eBank
             string welcomeMsg = message[rnd.Next(0, message.Length - 1)];
             return welcomeMsg;
         }
-        private static void AddAccount(int userNum, double balance = 0)
-        {
-            int accountNum;
-            Console.Write("\tSkriv in namn på kontot: ");
-            string accountName =Console.ReadLine();
-            Random rnd = new Random();
-            do
-            {               
-                    accountNum = rnd.Next(10000, 99999);             
-            } while (users[userNum].ExistingAccountNum(accountNum, users));
-            Account newAccount = new Account(accountName, accountNum, balance);
-            users[userNum].AddAccount(newAccount);
-        }
+        //Method to add new account to a user
         private static void AddAccount(int userNum, string accountName,
             int accountNum = 0, double balance = 0)
         {
@@ -231,7 +221,7 @@ namespace eBank
             {
                 existingAccount = users[userNum].ExistingAccountNum(accountNum,
                     users);
-                if (existingAccount)
+                if (existingAccount || accountNum < 10000 || accountNum > 99999)
                 {
                     accountNum = rnd.Next(10000, 99999);
                 }
@@ -247,9 +237,12 @@ namespace eBank
             {
                 Console.Clear();
                 Console.WriteLine("\tVilken typ av överföring vill du göra?");
-                Console.WriteLine("\n\t1. Till ett eget konto");
-                Console.WriteLine("\t2. Till ett externt konto");
-                Console.WriteLine("\n\t3. Avbryt");
+                PrintMenuNum("\n\t1.");
+                Console.WriteLine(" Till ett eget konto");
+                PrintMenuNum("\t2.");
+                Console.WriteLine(" Till ett externt konto");
+                PrintMenuNum("\n\t3.");
+                Console.WriteLine(" Avbryt");
                 switch (Console.ReadLine())
                 {
                     case "1":
@@ -272,9 +265,7 @@ namespace eBank
                         Thread.Sleep(1000);
                         break;
                 }
-            }
-            
-            
+            }          
         }
         //Method for getting back to menu
         private static void BackToMenu()
@@ -282,36 +273,42 @@ namespace eBank
             PrintInfo("\n\tKlicka ENTER för att komma till huvudmenyn!");
             Console.ReadKey();
         }
+        //Method to print menu numbers in the color theme
         private static void PrintMenuNum(string num)
         {
             Console.BackgroundColor = ConsoleColor.DarkGray;
             Console.Write(num);
             Console.ResetColor();
         }
+        //Method to print greetings in the color theme
         private static void PrintGreeting(string text)
         {
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine(text);
             Console.ResetColor();
         }
+        //Method to print info texts in the color theme
         private static void PrintInfo(string text)
         {
             Console.ForegroundColor = ConsoleColor.DarkBlue;
             Console.Write(text);
             Console.ResetColor();
         }
+        //Method to print Danger/Error texts in the color theme
         private static void PrintDanger(string text)
         {
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine(text);
             Console.ResetColor();
         }
+        //Method to print warnings in the color theme
         private static void PrintWarning(string text)
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine(text);
             Console.ResetColor();
         }
+        //Method to print success texts in the color theme
         private static void PrintSuccess(string text)
         {
             Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -341,10 +338,7 @@ namespace eBank
             AddAccount(3, "Sparkonto", 51515, 53946.53);
             User user5 = new User("Frans", "Fransson", "200001010115", 1234);
             users.Add(user5);
-            AddAccount(4, "Sparkonto", 11111, 213026.63);
-            
-            
-            
+            AddAccount(4, "Sparkonto", 11111, 213026.63);    
         }
     }
 }
