@@ -15,6 +15,14 @@ When the user is logged in there is a main menu. From here the user can choose f
 6. Log out
 7. Log out and Exit Program
 
+The program writes all users and information to a .txt file when the user is logging out or exiting the program. The program starts with reading the information from the .txt file to create user and account objects and put them in a list. This makes the balances on the accounts to last until the user starts the program again.
+
+## Structure
+The program has 3 classes: Program, User and Account. Each class has methods that connects to the class attributes or just fits well there by design.
+
+All code is C# and comments are in english. The program however prints to console in Swedish!
+
+Targeted framework is .NET Core 3.1
 
 ## Default users
 These are the deafult users and their accounts in the program:
