@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Globalization;
-using System.IO;
-
+﻿using System.IO;
+//Robin Svensson SUT-21
 namespace eBank
 {
     class Account
@@ -22,7 +18,6 @@ namespace eBank
         {
             get { return this.number; }
         }
-
         //Method to add an amount to balance
         public void AddToBalance(double amount)
         {

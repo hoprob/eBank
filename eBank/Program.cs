@@ -3,15 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.IO;
 
-//TODO Lägga till färger i utskrifter
-//TODO Ska metoderna för färgutskrift ligga i program klassen? Hur ska man nå dem från user klassen ?
-//TODO Snygga till utskrifter
-//TODO Gör så att olika konton har olika valuta, inklusive att valuta omvandlas när pengar flyttas mellan dem
-//TODO Menyval ändra pinkod
-//TODO Kunna backa i menyvalen
-//TODO Sortera kontonumren i utskriften
-//TODO Historik i överföring
-//TODO Fler klasser annat design pattern för klarare struktur
+//Robin Svensson SUT-21
 
 namespace eBank
 {
@@ -29,7 +21,7 @@ namespace eBank
             //Reads user information from .txt file to users list
             ReadFromFile();
             bool isRunning = true;
-            int userNum;
+            int userNum;           
             bool loggedIn = false; ;
             //Main loop
             while(isRunning)
@@ -92,7 +84,6 @@ namespace eBank
                         case "5":
                             Console.Clear();
                             Console.Write("\tSkriv in namn på kontot: ");
-                            //string accountName = Console.ReadLine();
                             AddAccount(userNum, Console.ReadLine());
                             Console.Clear();
                             PrintSuccess("\tNytt konto skapat!\n");
@@ -147,7 +138,7 @@ namespace eBank
                     //Searching for id in list of users
                     for (int i = 0; i < users.Count; i++)
                     {
-                        if(users[i].Id == id)
+                        if(users[i].CheckId(id))
                         {
                             correctId = true;
                             userNum = i;
@@ -233,10 +224,12 @@ namespace eBank
             bool existingAccount = false;
             do
             {
+                //Checks if account number exists
                 existingAccount = users[userNum].ExistingAccountNum(accountNum,
                     users);
                 if (existingAccount || accountNum < 10000 || accountNum > 99999)
                 {
+                    //Generating new random account Number
                     accountNum = rnd.Next(10000, 99999);
                 }
             } while (existingAccount);
@@ -259,16 +252,19 @@ namespace eBank
                 Console.WriteLine(" Avbryt");
                 switch (Console.ReadLine())
                 {
+                    //Internal Transfer
                     case "1":
                         Console.Clear();
                         users[userNum].InternalTransfer();
                         transferBool = false;
                         break;
+                    //Extrenal transfer
                     case "2":
                         Console.Clear();
                         users[userNum].ExternalTransfer(users);
                         transferBool = false;
                         break;
+                    //Back to main menu
                     case "3":
                         transferBool = false;
                         break;
@@ -281,7 +277,6 @@ namespace eBank
                 }
             }          
         }
-
         //Method for getting back to menu
         private static void BackToMenu()
         {
@@ -355,7 +350,6 @@ namespace eBank
                 {
                     using (StreamReader sr = new StreamReader(fileName))
                     {
-
                         string row;
                         while ((row = sr.ReadLine()) != null)
                         {
@@ -373,27 +367,30 @@ namespace eBank
                             {
                                 accountArray = row.Split("@@@");
                                 AddAccount(userIndex, accountArray[0],
-                                    Convert.ToInt32(accountArray[1]), Convert.ToDouble(accountArray[2]));
+                                    Convert.ToInt32(accountArray[1]),
+                                    Convert.ToDouble(accountArray[2]));
                             }
                         }
                     }
                 }
                 else
                 {
-                    throw new Exception($"Error! Filen:  {fileName}  finns ej tillgänglig!" +
-                        $"\nInga användare kommer att läsas in till programmet.");
+                    throw new Exception($"Error! Filen:  {fileName}  " +
+                        $"finns ej tillgänglig!\nInga användare kommer att" +
+                        $" läsas in till programmet.");
                 }
             }
             catch(Exception e)
             {
                 PrintDanger(e.ToString());
-                PrintDanger("\n\nDå programmet ej kan läsa in användare kommer det att avslutas." +
-                    "\nTRYCK ENTER för att avsluta programmet!");
+                PrintDanger("\n\nDå programmet ej kan läsa in användare" +
+                    " kommer det att avslutas.\nTRYCK ENTER för att avsluta" +
+                    " programmet!");
                 Console.ReadKey();
                 Environment.Exit(0);
             }
         }
-        //Method to create users .txt file
+        //Method to create users .txt file with default users
         private static void CreateUsersFile()
         {
             using (StreamWriter sw = new StreamWriter("users.txt"))

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-
+//Robin Svensson SUT-21
 namespace eBank
 {
     class User
@@ -19,10 +19,7 @@ namespace eBank
             this.id = id;
             this.pin = pin;
         }
-        public string Id
-        {
-            get { return this.id; }
-        }
+
         //Method for deposit to account
         public void Deposit()
         {
@@ -83,7 +80,7 @@ namespace eBank
                 {
                     PrintDanger("\n\tPinkod ej giltlig!!");
                     inputOk = false;
-                }//TODO Ska man kunna avbryta om man glömt pinkod?
+                }
             } while (!inputOk);
         }
         //Method to transfer to external account
@@ -157,6 +154,7 @@ namespace eBank
             transferSum = GetTransferSum(fromAccountIndex, userInstruction);
             do
             {
+                //Gets and checks pincode
                 if (CheckPin(GetPin()))
                 {
                     //Makes tranfer between accounts
@@ -173,7 +171,7 @@ namespace eBank
                 {
                     PrintDanger("\n\tPinkod ej giltlig!!");
                     inputOk = false;
-                }//TODO Ska man kunna avbryta om man glömt pinkod?
+                }
             } while (!inputOk);  
         }
         //Method to transfer money between users internal accounts
@@ -367,6 +365,14 @@ namespace eBank
             else
                 return false;
         }
+        //Method to check id
+        public bool CheckId(string id)
+        {
+            if (this.id == id)
+                return true;
+            else
+                return false;
+        }
         //Method to get users full name
         public string GetFullName()
         {
@@ -375,7 +381,8 @@ namespace eBank
         //Method to print user and accounts to file
         public void PrintToFile(StreamWriter sw)
         {
-            sw.WriteLine($"{this.firstName}###{this.lastName}###{this.id}###{this.pin}");
+            sw.WriteLine($"{this.firstName}###{this.lastName}###{this.id}" +
+                $"###{this.pin}");
             foreach (Account account in accounts)
             {
                 account.PrintToFile(sw);
@@ -494,18 +501,6 @@ namespace eBank
                 Console.WriteLine(ex.Message);
             }
             return isLeepYear;
-        }
-        private void PrintGreeting(string text)
-        {
-            Console.ForegroundColor = ConsoleColor.DarkCyan;
-            Console.WriteLine(text);
-            Console.ResetColor();
-        }
-        private void PrintInfo(string text)
-        {
-            Console.ForegroundColor = ConsoleColor.DarkBlue;
-            Console.Write(text);
-            Console.ResetColor();
         }
         private void PrintDanger(string text)
         {
