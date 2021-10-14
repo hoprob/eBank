@@ -1,8 +1,14 @@
 # eBank
-## Why
+## Table of contents
+* [Introduction](#Introduction)
+* [Description](#Description)
+* [Technology & Language](#Technology-&-Language)
+* [Default Users](#Default-users)
+* [VG-Uppgift](#VG-Uppgift)
+## Introduction
 This is a project for my education. The purpose is to learn basics in c# and practise to write code.
 
-## What
+## Description
 The program is a console version of a bank application. The program has 5 default users with different numbers of accounts (see under Default Users section in README file).
 First, the user has to log in with it's id number (swedish social security number) it gets verified as a valid id number both to structure according to a swedish social security number
 and that it is registered in the program. Then the user needs to write the correct pin code. If the user writes an invalid pincode 3 times the program is locked for 3 minutes.
@@ -17,7 +23,7 @@ When the user is logged in there is a main menu. From here the user can choose f
 
 The program writes all users and information to a .txt file when the user is logging out or exiting the program. The program starts with reading the information from the .txt file to create user and account objects and put them in a list. This makes the balances on the accounts to last until the user starts the program again.
 
-## Structure
+## Technology & Language
 The program has 3 classes: Program, User and Account. Each class has methods that connects to the class attributes or just fits well there by design.
 
 All code is C# and comments are in english. The program however prints to console in Swedish!
