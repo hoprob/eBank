@@ -4,9 +4,9 @@
 * [Description](#Description)
 * [Technology & Language](#Technology-&-Language)
 * [Default Users](#Default-users)
-* [VG-Uppgift](#VG-Uppgift)
+* [Reflektion VG-Uppgift](#Reflektion-VG-Uppgift)
 ## Introduction
-This is a project for my education. The purpose is to learn basics in c# and practise to write code.
+This is a project for my education. The purpose is to learn basics in C# and practise to write code.
 
 ## Description
 The program is a console version of a bank application. The program has 5 default users with different numbers of accounts (see under Default Users section in README file).
@@ -175,7 +175,7 @@ These are the deafult users and their accounts in the program:
     </tr>
 </table>
 
-## VG-Uppgift
+## Reflektion VG-Uppgift
 Jag valde att bygga upp mitt program med 3st klasser. Detta för att jag tycker att det är lättare att få struktur i koden på detta sätt och man får fler möjligheter att bygga vidare på programmet.<br>
 Klasserna är:<br>
 -Program som innehåller main metoden och meny utskrifter.<br>
