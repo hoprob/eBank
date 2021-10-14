@@ -24,7 +24,7 @@ When the user is logged in there is a main menu. From here the user can choose f
 The program writes all users and information to a .txt file when the user is logging out or exiting the program. The program starts with reading the information from the .txt file to create user and account objects and put them in a list. This makes the balances on the accounts to last until the user starts the program again.
 
 ## Technology & Language
-The program has 3 classes: Program, User and Account. Each class has methods that connects to the class attributes or just fits well there by design.
+The program has 3 classes: Program, User and Account. Each class has methods that connects to the class properties or just fits well there by design.
 
 All code is C# and comments are in english. The program however prints to console in Swedish!
 
@@ -179,10 +179,10 @@ These are the deafult users and their accounts in the program:
 Jag valde att bygga upp mitt program med 3st klasser. Detta för att jag tycker att det är lättare att få struktur i koden på detta sätt och man får fler möjligheter att bygga vidare på programmet.<br>
 Klasserna är:<br>
 -Program som innehåller main metoden och meny utskrifter.<br>
--User som definierar användar objekt samt håller lista för användarnas konton samt metoder som använder sig av User klassens variabler.<br>
--Account som definierar konto objekt och metoder som använder sig av Account klassens variabler.<br>
+-User som definierar användar objekt samt håller lista för användarnas konton samt metoder som använder sig av User klassens egenskaper.<br>
+-Account som definierar konto objekt och metoder som använder sig av Account klassens egenskaper.<br>
 
-Under arbetets gång har jag förökt att arbeta bort upprepande kod så mycket som möjligt genom att skapa metoder. Det har gjort att koden kunnat kortas ner en hel del och jag tycker själv att strukturen blivit bättre och koden lättare att läsa.<br> Ett problem som jag haft är att "skydda" variabler i klasserna, d.v.s att kunna ha dem private och inte skicka dem vidare till andra klasser. Jag tycker att jag fått till det på de flesta ställen i koden genom att strukturera i vilken klass metoderna skall vara samt vilken data som skickas mellan klassena.<br>
+Under arbetets gång har jag förökt att arbeta bort upprepande kod så mycket som möjligt genom att skapa metoder. Det har gjort att koden kunnat kortas ner en hel del och jag tycker själv att strukturen blivit bättre och koden lättare att läsa.<br> Ett problem som jag haft är att "skydda" egenskaperna i klasserna, d.v.s att kunna ha dem private och inte skicka dem vidare till andra klasser. Jag tycker att jag fått till det på de flesta ställen i koden genom att strukturera i vilken klass metoderna skall vara samt vilken data som skickas mellan klassena.<br>
 Jag hade också velat ha en bättre struktur på utskrifterna till konsollen, just nu skrivs utskrifter från olika metoder i olika klasser. Jag hade kunnat skriva koden så att det som skall skrivas ut kommer från en metod men själva utskrifen sker på ungefär samma ställa i koden, det hade gjort koden mer lättläst och flexibel.<br>
 Det som jag kan göra annorlunda är klass strukturen från början, att ha en bättre överblick i skapandet av projektet med vad som skall vara vart i koden. Jag behöver bli bättre på Design Patterns, men det kommer ju senare i utbildningen. Jag tycker att jag kunde haft fler klasser i projektet, till exempel en klass för filhantering och kanske en klass för verifiering/inloggning. Detta hade gjort koden ännu mer strukturerad och läsbar samt att man lättare hade kunnat använda klasserna till andra projekt än bara detta.
 
